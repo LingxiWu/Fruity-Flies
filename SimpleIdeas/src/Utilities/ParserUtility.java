@@ -10,6 +10,8 @@ import edu.stanford.nlp.pipeline.StanfordCoreNLP;
 
 public class ParserUtility {
 
+	// http://wordnetweb.princeton.edu/perl/webwn
+	
 	private enum SubjectTags {
 		nsubj, // nominal subject.
 		nsubjpass // passive nominal subject.
@@ -63,8 +65,12 @@ public class ParserUtility {
 		
 		for(BaseVerbTags bvt : BaseVerbTags.values()) {
 			if(dependencyAnnotatedLine.contains(bvt.toString())){
-				
+				baseVerb[0] = dependencyAnnotatedLine.trim();
+				break;
 			}
+		}
+		if(baseVerb[0].length() != 0) {
+			baseVerb[1] = lemmatize(baseVerb[0]);
 		}
 		
 		return baseVerb;
@@ -75,10 +81,10 @@ public class ParserUtility {
 	 * @param dependencyLine
 	 * @return
 	 */
-	public static String[] nounSubject(String dependencyLine) {
+	public static String[] nounSubject(String dependencyAnnotatedLine) {
 		String[] nounSubject = new String[2];
-		if(dependencyLine.contains(SubjectTags.nsubj.toString())) { 
-			nounSubject[0] = dependencyLine.trim();
+		if(dependencyAnnotatedLine.contains(SubjectTags.nsubj.toString())) { 
+			nounSubject[0] = dependencyAnnotatedLine.trim();
 		}
 		
 		return nounSubject;
