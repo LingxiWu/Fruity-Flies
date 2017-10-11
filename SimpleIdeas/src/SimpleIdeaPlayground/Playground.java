@@ -18,7 +18,7 @@ public class Playground {
 	    // run all Annotators on this text
 	    parserHelper.getPipeline().annotate(document);
 
-	    System.out.println('c');
+	    System.out.println('a');
 	}
 
 }
