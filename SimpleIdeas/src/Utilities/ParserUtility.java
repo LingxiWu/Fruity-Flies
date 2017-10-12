@@ -3,10 +3,13 @@ package Utilities;
 import java.util.Properties;
 
 import edu.stanford.nlp.ling.CoreAnnotations.LemmaAnnotation;
+import edu.stanford.nlp.ling.CoreAnnotations.NamedEntityTagAnnotation;
+import edu.stanford.nlp.ling.CoreAnnotations.SentencesAnnotation;
 import edu.stanford.nlp.ling.CoreAnnotations.TokensAnnotation;
 import edu.stanford.nlp.ling.CoreLabel;
 import edu.stanford.nlp.pipeline.Annotation;
 import edu.stanford.nlp.pipeline.StanfordCoreNLP;
+import edu.stanford.nlp.semgraph.SemanticGraphCoreAnnotations.BasicDependenciesAnnotation;
 
 public class ParserUtility {
 
@@ -81,17 +84,46 @@ public class ParserUtility {
 	 * @param dependencyLine
 	 * @return
 	 */
-	public static String[] nounSubject(String dependencyAnnotatedLine) {
+	public static String[] extractNounSubject(String sentence) {
+		
 		String[] nounSubject = new String[2];
-		if(dependencyAnnotatedLine.contains(SubjectTags.nsubj.toString())) { 
-			nounSubject[0] = dependencyAnnotatedLine.trim();
-		}
+		Annotation doc = new Annotation(sentence);
+		pipeline.annotate(doc);
+		String raw = doc.get(SentencesAnnotation.class).get(0).get(BasicDependenciesAnnotation.class).toString(); // A dependency parse tree.
+		
+		outerloop:
+		for(String dependencySentence : raw.split("->")) {		
+			for(SubjectTags st : SubjectTags.values()) {
+				if(dependencySentence.contains(st.toString())){
+					nounSubject[0] = dependencySentence.trim().split("/")[0];
+					nounSubject[1] = lemmatize(nounSubject[0]);
+					break outerloop;
+				}
+			}
+		}		
 		
 		return nounSubject;
 	}
 	
+//	public static String[] duration(String sentence) {
+//		
+//	}
+	
+	public static void extractNamedEntity(String sentence) {
+		
+		Annotation doc = new Annotation(sentence);
+		pipeline.annotate(doc);
+		for(CoreLabel token : doc.get(SentencesAnnotation.class).get(0).get(TokensAnnotation.class)) {
+			String ne = token.get(NamedEntityTagAnnotation.class);
+            System.out.println(ne);
+		}
+		
+//		lemma = doc.get(TokensAnnotation.class).get(0).get(LemmaAnnotation.class);
+		
+	}
+	
 	/**
-	 * Take a word and return its lemma.
+	 * Take a word and return its lemma. occurs -> occur, occurred -> occur.
 	 * @param propsString
 	 */
 	public static String lemmatize(String word) {

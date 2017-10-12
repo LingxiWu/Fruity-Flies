@@ -11,30 +11,30 @@ import edu.stanford.nlp.semgraph.SemanticGraphCoreAnnotations.EnhancedDependenci
 
 public class Playground {
 
+	static ParserUtility parserHelper = new ParserUtility();
+	
 	public static void main(String[] args) {
 
-		ParserUtility parserHelper = new ParserUtility();
 		
-	    // read some text in the text variable
-	    String text = "The number of vehicles in a lane should never exceed its maximum vehicle capacity.";
-
+		
+//	    String text = "The number of vehicles in a lane should never exceed its maximum vehicle capacity.";
+		String text = "No vehicles on Emmet Street should be delayed for more than 50 seconds or 20%.";
 	    // create an empty Annotation just with the given text
 	    Annotation document = new Annotation(text);
 
 	    // run all Annotators on this text
 	    parserHelper.getPipeline().annotate(document);
-//	    System.out.println(document);
-//	    document.get(SentencesAnnotation.class).get(0).get(TokensAnnotation.class).get(0).get(CollapsedCCProcessedDependenciesAnnotation.class).toString();
+
+//	    System.out.println(document.get(SentencesAnnotation.class).get(0).get(BasicDependenciesAnnotation.class).toString());
 	    
-//	    for(String token : document.get(SentencesAnnotation.class).get(0).get(CollapsedCCProcessedDependenciesAnnotation.class).toString()) {
-//	    	System.out.println(token.get(TokensAnnotation.class).toString());
-//	    }
-	    
-	    System.out.println(document.get(SentencesAnnotation.class).get(0).get(BasicDependenciesAnnotation.class).toString());
-	    
-//	    System.out.println(document.get(SentencesAnnotation.class).get(0).get(TokensAnnotation.class).get(0).toString());
-	    
-	    
+//	    ParserUtility.extractNamedEntity(text);
+	    String[] s = ParserUtility.extractNounSubject(text);
+	    System.out.println(s[1]);
+	}
+	
+	public static void testDuration(String sentense) {
+		
+		
 	}
 
 }
