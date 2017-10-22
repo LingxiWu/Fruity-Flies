@@ -1,5 +1,6 @@
 package SimpleIdeaPlayground;
 
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -22,8 +23,8 @@ public class Playground {
 		
 //	    String text = "The number of vehicles in a lane should never exceed its maximum vehicle capacity.";
 //		String text = "No vehicles around UVA campus should be delayed for more than 50 seconds.";
-//		String text = "Emergency vehicles should not wait for more than 10 seconds at an intersection.";
-		String text = "The camera should be keep on after 5 am.";
+		String text = "There are 50% chance that a Emergency vehicle could wait for more than 10 seconds at an intersection arter 5 am on Emmet Street.";
+//		String text = "The camera should be keep on after 5 o'clock.";
 	    // create an empty Annotation just with the given text
 	    Annotation document = new Annotation(text);
 
@@ -35,13 +36,8 @@ public class Playground {
 //	    ParserUtility.extractNamedEntity(text);
 //	    String[] s = ParserUtility.extractNounSubject(text);
 //	    System.out.println(s[1]);
-	    ParserUtility.extractNamedEntity(text);
-
-	}
-	
-	public static void testDuration(String sentense) {
-		
-		
+	    HashMap<String, String> hp = ParserUtility.extractNamedEntities(text);
+	    
 	}
 
 }

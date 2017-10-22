@@ -1,6 +1,7 @@
 package Utilities;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Properties;
 import java.util.Set;
@@ -115,40 +116,42 @@ public class ParserUtility {
 		return nounSubject;
 	}
 
-	
-	public static void extractNamedEntity(String sentence) {
+	/**
+	 * Build a hash map that stores Named Entities: LOCATION -> "Baker Street" 
+	 * @param sentence
+	 */
+	public static HashMap<String, String> extractNamedEntities(String sentence) {
 
 		Annotation doc = new Annotation(sentence);
 		pipeline.annotate(doc);
+		ArrayList<String> tempNEClassHolder = new ArrayList<String>();
+		ArrayList<String> tempNE = new ArrayList<String>();
+		HashMap<String, String> namedEntities = new HashMap<String, String>();
 		
+		String recognizedNE = "0", partialNEValue = "";		
 		for(CoreLabel token : doc.get(SentencesAnnotation.class).get(0).get(TokensAnnotation.class)) {
 			String ne = token.get(NamedEntityTagAnnotation.class);
-			System.out.println(ne);
-//			String neParts = "";
-			if(!ne.equals("O")) {
-				neInfo.getNEClass().add(ne);
-//				neParts += token.toString();
-//				System.out.println(token.toString());
+			if(!ne.equals("O")) {								
+				if(!recognizedNE.equals(ne)) {
+					recognizedNE = ne;		
+					tempNEClassHolder.add(recognizedNE);
+					if(!partialNEValue.isEmpty()) {						
+						tempNE.add(partialNEValue.trim());
+					}
+					partialNEValue = ""; 					
+				}
+				partialNEValue += token.toString().split("-")[0];
+				partialNEValue += " ";
 			}
-//			neInfo.getNE().add(neParts);
 		}
-//		System.out.println(neInfo.getNEClass().toString());
+		if(!partialNEValue.isEmpty()) {
+			tempNE.add(partialNEValue.trim());
+		}
+		for(int i=0;i<tempNEClassHolder.size();i++) {
+			namedEntities.put(tempNEClassHolder.get(i), tempNE.get(i));
+		}
+		return namedEntities;
 		
-	}
-	
-	public static void entity(String sentence) {
-		Annotation doc = new Annotation(sentence);
-		pipeline.annotate(doc);
-		for(CoreLabel token : doc.get(SentencesAnnotation.class).get(0).get(TokensAnnotation.class)) {
-			String ne = token.get(NamedEntityTagAnnotation.class);
-			String neParts = "";
-			if(!ne.equals("O")) {
-				neInfo.getNEClass().add(ne);
-//				neParts += token.toString();
-				System.out.println(token.toString());
-			}
-			neInfo.getNE().add(neParts);
-		}
 	}
 	
 	/**
@@ -194,6 +197,8 @@ public class ParserUtility {
 		// Use set to eliminate duplicate.
 		Set<String> NEClass = new HashSet<>();
 		Set<String> NE = new HashSet<>();
+		
+		HashMap<String, String> NamedEntities = new HashMap<String, String>();
 		
 		/**
 		 * 
