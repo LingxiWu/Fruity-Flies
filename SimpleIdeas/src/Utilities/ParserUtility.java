@@ -1,6 +1,9 @@
 package Utilities;
 
+import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.Properties;
+import java.util.Set;
 
 import edu.stanford.nlp.ling.CoreAnnotations.LemmaAnnotation;
 import edu.stanford.nlp.ling.CoreAnnotations.NamedEntityTagAnnotation;
@@ -10,7 +13,11 @@ import edu.stanford.nlp.ling.CoreLabel;
 import edu.stanford.nlp.pipeline.Annotation;
 import edu.stanford.nlp.pipeline.StanfordCoreNLP;
 import edu.stanford.nlp.semgraph.SemanticGraphCoreAnnotations.BasicDependenciesAnnotation;
-
+/**
+ * Utility class for parsing a single sentence.
+ * @author lingxiwu
+ *
+ */
 public class ParserUtility {
 
 	// http://wordnetweb.princeton.edu/perl/webwn
@@ -30,6 +37,7 @@ public class ParserUtility {
 	
 	private Properties props;
 	private static StanfordCoreNLP pipeline;
+	private static NamedEntityInfo neInfo;
 	
 	/**
 	 * Empty args Constructor.
@@ -41,6 +49,7 @@ public class ParserUtility {
 		props = new Properties();
 		props.put("annotators", "tokenize, ssplit, pos, lemma, ner, parse, dcoref");
 		pipeline = new StanfordCoreNLP(props);
+		neInfo = new NamedEntityInfo();
 	}
 	
 	/**
@@ -53,6 +62,7 @@ public class ParserUtility {
 		props = new Properties();
 		props.put("annotators", propsString);
 		pipeline = new StanfordCoreNLP(props);		
+		neInfo = new NamedEntityInfo();
 	}
 	
 	
@@ -80,9 +90,9 @@ public class ParserUtility {
 	}
 	
 	/**
-	 * TO-DO:
+	 * 
 	 * @param dependencyLine
-	 * @return
+	 * @return A string array with two entries. First = Original , Second = Lemmatized version
 	 */
 	public static String[] extractNounSubject(String sentence) {
 		
@@ -104,22 +114,41 @@ public class ParserUtility {
 		
 		return nounSubject;
 	}
-	
-//	public static String[] duration(String sentence) {
-//		
-//	}
+
 	
 	public static void extractNamedEntity(String sentence) {
+
+		Annotation doc = new Annotation(sentence);
+		pipeline.annotate(doc);
 		
+		for(CoreLabel token : doc.get(SentencesAnnotation.class).get(0).get(TokensAnnotation.class)) {
+			String ne = token.get(NamedEntityTagAnnotation.class);
+			System.out.println(ne);
+//			String neParts = "";
+			if(!ne.equals("O")) {
+				neInfo.getNEClass().add(ne);
+//				neParts += token.toString();
+//				System.out.println(token.toString());
+			}
+//			neInfo.getNE().add(neParts);
+		}
+//		System.out.println(neInfo.getNEClass().toString());
+		
+	}
+	
+	public static void entity(String sentence) {
 		Annotation doc = new Annotation(sentence);
 		pipeline.annotate(doc);
 		for(CoreLabel token : doc.get(SentencesAnnotation.class).get(0).get(TokensAnnotation.class)) {
 			String ne = token.get(NamedEntityTagAnnotation.class);
-            System.out.println(ne);
+			String neParts = "";
+			if(!ne.equals("O")) {
+				neInfo.getNEClass().add(ne);
+//				neParts += token.toString();
+				System.out.println(token.toString());
+			}
+			neInfo.getNE().add(neParts);
 		}
-		
-//		lemma = doc.get(TokensAnnotation.class).get(0).get(LemmaAnnotation.class);
-		
 	}
 	
 	/**
@@ -150,4 +179,47 @@ public class ParserUtility {
 	public StanfordCoreNLP getPipeline() {
 		return pipeline;
 	}
+	
+	/*
+	 * other utility stuff.
+	 */
+	
+	/**
+	 * Holds Named Entity information. NEClass -> "LOCATION","PEOPLE". NE -> "Emmet Street", "Mike Johnson"
+	 * @author lingxiwu
+	 *
+	 */
+	public class NamedEntityInfo{
+		
+		// Use set to eliminate duplicate.
+		Set<String> NEClass = new HashSet<>();
+		Set<String> NE = new HashSet<>();
+		
+		/**
+		 * 
+		 * @param NEName: like LOCATION, DURATION, PERSON, and etc.
+		 */
+		public void addNEClass(String NEClass) {
+			this.NEClass.add(NEClass);
+		}
+		
+		public void addNE(String NE) {
+			this.NE.add(NE);
+		}
+		
+		public Set<String> getNEClass(){
+			return NEClass;
+		}
+		
+		public Set<String> getNE(){
+			return NE;
+		}
+		
+		public void cleanupNEInfo() {
+			NEClass = new HashSet<>();
+			NE = new HashSet<>();
+		}
+		
+	}
+	
 }
