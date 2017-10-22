@@ -36,9 +36,22 @@ public class ParserUtility {
 		VBZ // Verb, 3rd person singular present
 	}
 	
+	private static ParserUtility firstInstance = null;
 	private Properties props;
 	private static StanfordCoreNLP pipeline;
 	private static NamedEntityInfo neInfo;
+	
+//	private ParserUtility() {
+//		
+//	}
+//	
+//	public static ParserUtility getInstance() {
+//		
+//		
+//		if(firstInstance == null) {
+//			
+//		}
+//	}
 	
 	/**
 	 * Empty args Constructor.
@@ -118,6 +131,7 @@ public class ParserUtility {
 
 	/**
 	 * Build a hash map that stores Named Entities: LOCATION -> "Baker Street" 
+	 * Be careful with 0 and O... For some reason Stanford Core NLP uses O not 0.
 	 * @param sentence
 	 */
 	public static HashMap<String, String> extractNamedEntities(String sentence) {
@@ -128,7 +142,7 @@ public class ParserUtility {
 		ArrayList<String> tempNE = new ArrayList<String>();
 		HashMap<String, String> namedEntities = new HashMap<String, String>();
 		
-		String recognizedNE = "0", partialNEValue = "";		
+		String recognizedNE = "O", partialNEValue = "";		
 		for(CoreLabel token : doc.get(SentencesAnnotation.class).get(0).get(TokensAnnotation.class)) {
 			String ne = token.get(NamedEntityTagAnnotation.class);
 			if(!ne.equals("O")) {								
@@ -150,8 +164,19 @@ public class ParserUtility {
 		for(int i=0;i<tempNEClassHolder.size();i++) {
 			namedEntities.put(tempNEClassHolder.get(i), tempNE.get(i));
 		}
+		System.out.println("Performing Named Entity Extraction Process ... ");
+
+		System.out.println(tempNEClassHolder.toString());
+		System.out.println(tempNE.toString());
 		return namedEntities;
 		
+	}
+	
+	public static SensorActuator matchSensorActuator(String sentence) {
+		
+		
+		
+		return null;
 	}
 	
 	/**

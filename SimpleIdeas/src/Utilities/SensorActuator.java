@@ -1,6 +1,8 @@
 package Utilities;
 
 import java.util.Set;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 /**
  * Define common characteristics of a sensor/actuator.
  * Parent class for all sensors and actuators.
@@ -61,6 +63,16 @@ public class SensorActuator {
 		this.parseTreeRules = parseTreeRules;
 	}
 	
+//	public static void regexChecker(String theRegex, String str2Check) {
+//		Pattern checkRegex = Pattern.compile(theRegex);
+//		Matcher regexMatcher = checkRegex.matcher(str2Check);
+//		
+//		while(regexMatcher.find()) {
+//			if(regexMatcher.group().length() != 0) {
+//				System.out.println(regexMatcher.group().trim());
+//			}
+//		}
+//	}
 	
 	
 }
