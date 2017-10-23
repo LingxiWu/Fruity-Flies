@@ -90,21 +90,23 @@ public class SensorActuator {
 	 * @return
 	 */
 	public boolean match(String clauseToCheck) {
-		System.out.println(clauseToCheck);
+		System.out.println("Clause to match: " + clauseToCheck);
 		Boolean matched = false;
 		Pattern checkRegex;
 		Matcher regexMatcher;
 		Iterator<String> itr = regexPatterns.iterator();
+		int i=0;
 		outerloop:
 		while(itr.hasNext()) {
+			i++;
 			String regex = itr.next();
-			System.out.println(regex);
+			System.out.println("# " + i + " Regex for sensor/actuator " + this.name + ": " + regex);
 			checkRegex = Pattern.compile(regex);
 			regexMatcher = checkRegex.matcher(clauseToCheck);
 			
 			while(regexMatcher.find()) {
 				if(regexMatcher.group().length() != 0) {
-					System.out.println(regexMatcher.group().trim());
+					System.out.println("Signal expression: " + regexMatcher.group().trim());
 					matched = true;
 					break outerloop;
 				}

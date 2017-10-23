@@ -23,11 +23,11 @@ public class Playground {
 
 		
 		
-//	    String text = "The quantity of vehicles in a lane should never exceed its maximum vehicle.";
+	    String text = "The quantity of vehicles in a lane should never exceed its maximum vehicle.";
 //		String text = "No vehicles around UVA campus should be delayed for more than 50 seconds.";
 //		String text = "There are 50% chance that a Emergency vehicle could wait for more than 10 seconds at an intersection arter 5 am on Emmet Street.";
 //		String text = "The camera should be keep on after 5 o'clock.";
-		String text = "There cannot be more than One cars in a lane.";
+//		String text = "There cannot be more than five cars in a lane.";
 	    // create an empty Annotation just with the given text
 	    Annotation document = new Annotation(text);
 
@@ -45,8 +45,8 @@ public class Playground {
 //	    System.out.println(text.matches(regex));
 	    KnowledgeBase knowledgeBase = new KnowledgeBase();
 	    knowledgeBase.addSampleSensorActuators();
-	    
-	    System.out.println(knowledgeBase.getSensorsActuators().get(0).match(text));
+	    System.out.println(knowledgeBase.identifySensorActuator(text).toString());
+//	    System.out.println(knowledgeBase.getSensorsActuators().get(0).match(text));
 	    
 	}
 	    

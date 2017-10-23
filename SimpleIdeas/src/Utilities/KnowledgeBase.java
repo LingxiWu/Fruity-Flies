@@ -2,6 +2,7 @@ package Utilities;
 
 import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.Set;
 
 /**
@@ -21,6 +22,23 @@ public class KnowledgeBase {
 		sensorsActuators = new ArrayList<SensorActuator>();		
 	}
 	
+	/**
+	 * Given a clause, iterate through the knowledge base and try to identify its associated sensor/actuator
+	 * @param clause
+	 * @return
+	 */
+	public SensorActuator identifySensorActuator(String clause) {
+		Iterator<SensorActuator> itr = sensorsActuators.iterator();
+		SensorActuator matched = null;
+		while(itr.hasNext()) {
+			SensorActuator sa = itr.next();
+			if(sa.match(clause)) {
+				matched = sa;
+				break;
+			}
+		}
+		return matched;
+	}
 	public ArrayList<SensorActuator> getSensorsActuators(){
 		ArrayList<SensorActuator> listOfSensorsActuators = new ArrayList<SensorActuator>();
 		listOfSensorsActuators.addAll(sensorsActuators);
