@@ -1,5 +1,7 @@
 package Utilities;
 
+import java.util.HashSet;
+import java.util.Iterator;
 import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -54,7 +56,7 @@ public class SensorActuator {
 		return regexPatterns;
 	}
 	public void setRegexPatterns(Set<String> regexPatterns) {
-		this.regexPatterns = regexPatterns;
+		this.regexPatterns.addAll(regexPatterns);
 	}
 	public Set<String> getParseTreeRules() {
 		return parseTreeRules;
@@ -63,16 +65,52 @@ public class SensorActuator {
 		this.parseTreeRules = parseTreeRules;
 	}
 	
-//	public static void regexChecker(String theRegex, String str2Check) {
-//		Pattern checkRegex = Pattern.compile(theRegex);
-//		Matcher regexMatcher = checkRegex.matcher(str2Check);
-//		
-//		while(regexMatcher.find()) {
-//			if(regexMatcher.group().length() != 0) {
-//				System.out.println(regexMatcher.group().trim());
-//			}
-//		}
-//	}
+	/**
+	 * Add a single regular expression to a set of regexPatterns.
+	 * @param regexPattern
+	 */
+	public void addRegexPattern(String regexPattern) {
+		if(this.regexPatterns != null) {
+			this.regexPatterns.add(regexPattern);
+		} else {
+			this.regexPatterns = new HashSet<String>();
+			this.regexPatterns.add(regexPattern);
+		}
+	}
 	
+	public String toString() {	
+		String representation = "Domain: " + this.domain + "\n" + "Name: " + this.name + "\n" 
+	+ "Parameter Type: " + this.paramType + "\n" + "Return Values: " + this.returnValueType;
+		return representation;
+	}
 	
+	/**
+	 * It takes a clause and tries to identify a sensor or actuator.
+	 * @param clause
+	 * @return
+	 */
+	public boolean match(String clauseToCheck) {
+		System.out.println(clauseToCheck);
+		Boolean matched = false;
+		Pattern checkRegex;
+		Matcher regexMatcher;
+		Iterator<String> itr = regexPatterns.iterator();
+		outerloop:
+		while(itr.hasNext()) {
+			String regex = itr.next();
+			System.out.println(regex);
+			checkRegex = Pattern.compile(regex);
+			regexMatcher = checkRegex.matcher(clauseToCheck);
+			
+			while(regexMatcher.find()) {
+				if(regexMatcher.group().length() != 0) {
+					System.out.println(regexMatcher.group().trim());
+					matched = true;
+					break outerloop;
+				}
+			}
+		}
+		return matched;
+	}
+
 }

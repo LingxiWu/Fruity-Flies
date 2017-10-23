@@ -12,13 +12,19 @@ import java.util.Set;
  */
 public class KnowledgeBase {
 	
-	private ArrayList<SensorActuator> sensorActuators;
+	private ArrayList<SensorActuator> sensorsActuators;
 	
 	/**
 	 * Constructor.
 	 */
 	public KnowledgeBase() {
-		sensorActuators = new ArrayList<SensorActuator>();		
+		sensorsActuators = new ArrayList<SensorActuator>();		
+	}
+	
+	public ArrayList<SensorActuator> getSensorsActuators(){
+		ArrayList<SensorActuator> listOfSensorsActuators = new ArrayList<SensorActuator>();
+		listOfSensorsActuators.addAll(sensorsActuators);
+		return listOfSensorsActuators;
 	}
 	
 	/**
@@ -29,14 +35,14 @@ public class KnowledgeBase {
 	public void addSampleSensorActuators() {
 		// Make a whole bunch of sensors.
 		VehicleNumber vehicleNumberSensor = new VehicleNumber("Traffic", "VehicleNumber", "Integer", "SpaceLocation");
-		vehicleNumberSensor.addRegexPattern("(?i)(number|quantity)+\\\\s(of)\\\\s+(vehicles|cars|automobiles)");
-				
+		vehicleNumberSensor.addRegexPattern("(?i)(number|quantity)+\\s(of)\\s+(vehicles|cars|automobiles)");
+		vehicleNumberSensor.addRegexPattern("(?i)([0-9]|[one|two|three|four|five|six|seven|eight|nine|ten])+\\s+(vehicles|cars|automobiles)");		
 		// Add them to the sensorActuators list.
-		sensorActuators.add(vehicleNumberSensor);
+		sensorsActuators.add(vehicleNumberSensor);
 	}
 	
 	public boolean addSensorActuator(SensorActuator sensorActuator) {
-		return this.sensorActuators.add(sensorActuator);
+		return this.sensorsActuators.add(sensorActuator);
 	}
 	
 	/**
@@ -57,34 +63,9 @@ public class KnowledgeBase {
 		
 		public int getHistoricalAvg() {
 			return HISTORICAL_AVERAGE;
-		}
+		}	
 		
-		/**
-		 * Add a single regular expression to a set of regexPatterns.
-		 * @param regexPattern
-		 */
-		public void addRegexPattern(String regexPattern) {
-			if(this.regexPatterns != null) {
-				this.regexPatterns.add(regexPattern);
-			} else {
-				this.regexPatterns = new HashSet<String>();
-			}
-		}
-		
-		
-		public void setRegexPatterns(Set<String> regexPatterns) {
-			this.regexPatterns.addAll(regexPatterns);
-		}
-		
-		public Set<String> getRegexPatterns(){		
-			return this.regexPatterns;
-		}
-		
-		public String toString() {
-			
-			String representation = this.domain + "\n" + this.name + "\n" + this.paramType + "\n" + this.returnValueType;
-			return representation;
-		}
+
 	}
 	
 	/**

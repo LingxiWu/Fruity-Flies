@@ -23,10 +23,11 @@ public class Playground {
 
 		
 		
-	    String text = "The quantity of vehicles in a lane should never exceed its maximum vehicle.";
+//	    String text = "The quantity of vehicles in a lane should never exceed its maximum vehicle.";
 //		String text = "No vehicles around UVA campus should be delayed for more than 50 seconds.";
 //		String text = "There are 50% chance that a Emergency vehicle could wait for more than 10 seconds at an intersection arter 5 am on Emmet Street.";
 //		String text = "The camera should be keep on after 5 o'clock.";
+		String text = "There cannot be more than One cars in a lane.";
 	    // create an empty Annotation just with the given text
 	    Annotation document = new Annotation(text);
 
@@ -35,15 +36,17 @@ public class Playground {
 
 //	    System.out.println(document.get(SentencesAnnotation.class).get(0).get(BasicDependenciesAnnotation.class).toString());
 	    
-//	    ParserUtility.extractNamedEntity(text);
 //	    String[] s = ParserUtility.extractNounSubject(text);
 //	    System.out.println(s[1]);
 //	    HashMap<String, String> hp = ParserUtility.extractNamedEntities(text);
-	    String regex = "(?i)(number|quantity)+\\s(of)\\s+(vehicles|cars|automobiles)"; 
-	    regexChecker(regex,text);
-	    System.out.println(text.matches(regex));
-	    KnowledgeBase knowledge = new KnowledgeBase();
-	    knowledge.addSampleSensorActuators();
+//	    String regex = "(?i)(number|quantity)+\\s(of)\\s+(vehicles|cars|automobiles)"; 
+//	    String regex = "(?i)([0-9]|[one|two|three|four|five|six|seven|eight|nine|ten])+\\s+(vehicles|cars|automobiles)"; 
+//	    regexChecker(regex,text);
+//	    System.out.println(text.matches(regex));
+	    KnowledgeBase knowledgeBase = new KnowledgeBase();
+	    knowledgeBase.addSampleSensorActuators();
+	    
+	    System.out.println(knowledgeBase.getSensorsActuators().get(0).match(text));
 	    
 	}
 	    
