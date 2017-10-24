@@ -164,7 +164,49 @@ public class ParserUtility {
 	}
 	
 	/**
-	 * Find the first word after SBAR tag as the begining word of dependent clause.
+	 * This method extracts dependent clause from a complex sentence by traversing through the parse tree.
+	 * @param parseTree
+	 * @return
+	 */
+	public static String extractDependentClause(String parseTree) {
+		
+		Stack<String> stack = new Stack<String>();
+		String partialParseTree = "";
+		String dependentClause = "";
+		
+		// Step 1: get partial parse tree that contains dependent clause.
+		int startIndex = parseTree.indexOf("(SBAR");
+		if(startIndex != -1) {
+			stack.push("(");
+			for(int i=1; i<parseTree.substring(startIndex).length()-1; i++) {
+				if(stack.size() == 0) {
+					System.out.println("Partial parsed tree: "+parseTree.substring(startIndex).substring(0, i));	
+					partialParseTree = parseTree.substring(startIndex).substring(0, i);
+					break;
+				}
+				if(parseTree.substring(startIndex).charAt(i) == '(') {
+					stack.push("(");
+				} else if(parseTree.substring(startIndex).charAt(i) == ')') {
+					stack.pop();
+				}					 
+			}	 
+		}	
+		
+		// Step 2: traverse the partial parse tree and extract words to recover the dependent clause.
+		if(partialParseTree.length()!=0) {
+			String[] parts = partialParseTree.split(" ");
+			for(int i=0;i<parts.length;i++) {
+				if(!parts[i].contains("(")){
+					dependentClause += (parts[i].replaceAll("\\)", "") + " ");
+				}
+			}
+		}
+		System.out.println("Revocered dependent clause: " + dependentClause);
+		return dependentClause;
+	}
+	
+	/**
+	 * Find the first word after SBAR tag as the beginning word of dependent clause.
 	 * @param parseTree
 	 * @return
 	 */
@@ -177,7 +219,9 @@ public class ParserUtility {
 			String[] parts = partialParseTree.split(" ");
 			for(int i=0;i<parts.length;i++) {
 				if(!parts[i].contains("(")){
-					startWord = parts[i].substring(0,parts[i].length()-1);
+					
+//					startWord = parts[i].substring(0,parts[i].length()-1);
+					startWord = parts[i].replaceAll("\\)", "");
 					System.out.println("Dependent Clause starts here: " + startWord);
 					break;
 				}
@@ -205,6 +249,8 @@ public class ParserUtility {
 			stack.push("(");
 			for(int i=1; i<partialParseTree.length()-1; i++) {
 				if(stack.size() == 0) {
+					System.out.println("End word index: "+i);
+					System.out.println("partial parsed tree: "+partialParseTree.substring(0, i));
 					// traverse backwards for the end word of that dependent clause.
 					for(int j=i-1; j>0; j--) {							 
 						if(partialParseTree.charAt(j)!=')') {								 
@@ -274,6 +320,7 @@ public class ParserUtility {
 	}
 	
 	/**
+	 * TO-DO: refine compound sentence
 	 * This method is generalized based on imperical observation and English Grammer.
 	 * Given a specification sentence, determine if it's a simple sentence, complex sentence, or compound sentence.
 	 * e.g. 1 Complex: When the illumination is set to level 3, the carbon monoxide (CO) emission in a lane should be no more than 50 mg.

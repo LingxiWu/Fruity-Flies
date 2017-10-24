@@ -28,12 +28,16 @@ public class KnowledgeBase {
 	 * @return
 	 */
 	public SensorActuator identifySensorActuator(String clause) {
+
+		System.out.println("Clause to match: " + clause);
 		Iterator<SensorActuator> itr = sensorsActuators.iterator();
 		SensorActuator matched = null;
 		while(itr.hasNext()) {
 			SensorActuator sa = itr.next();
+			System.out.println("SensorActuator: " + sa.getName());
 			if(sa.match(clause)) {
 				matched = sa;
+				System.out.println("SensorActuator identified: " + sa.getName());
 				break;
 			}
 		}
@@ -52,11 +56,20 @@ public class KnowledgeBase {
 	 */
 	public void addSampleSensorActuators() {
 		// Make a whole bunch of sensors.
-		VehicleNumber vehicleNumberSensor = new VehicleNumber("Traffic", "VehicleNumber", "Integer", "SpaceLocation");
+		VehicleNumber vehicleNumberSensor = new VehicleNumber("Traffic", "VehicleNumber", "Numerical", "SpaceLocation");
 		vehicleNumberSensor.addRegexPattern("(?i)(number|quantity)+\\s(of)\\s+(vehicles|cars|automobiles)");
 		vehicleNumberSensor.addRegexPattern("(?i)([0-9]|[one|two|three|four|five|six|seven|eight|nine|ten])+\\s+(vehicles|cars|automobiles)");		
+		
+		CarbonMonoxide CarbonMonoxideSensor = new CarbonMonoxide("Environment", "CarbonMonoxide", "mg", "SpaceLocation");
+		CarbonMonoxideSensor.addRegexPattern("(?i)(Carbon monoxide)");
+		CarbonMonoxideSensor.addRegexPattern("(?i)((CO))");
+		
+		
+		
+		
 		// Add them to the sensorActuators list.
 		sensorsActuators.add(vehicleNumberSensor);
+		sensorsActuators.add(CarbonMonoxideSensor);
 	}
 	
 	public boolean addSensorActuator(SensorActuator sensorActuator) {
@@ -94,6 +107,19 @@ public class KnowledgeBase {
 	public class CarbonMonoxide extends SensorActuator{
 
 		public CarbonMonoxide(String domain, String name, String returnValueType, String paramType) {
+			super(domain, name, returnValueType, paramType);
+		}
+		
+	}
+	
+	/**
+	 * A type a sensor that monitors the Illumination level in a lane or at around some places.
+	 * @author lw2ef
+	 *
+	 */
+	public class Illumination extends SensorActuator{
+
+		public Illumination(String domain, String name, String returnValueType, String paramType) {
 			super(domain, name, returnValueType, paramType);
 		}
 		

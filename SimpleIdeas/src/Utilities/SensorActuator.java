@@ -90,7 +90,6 @@ public class SensorActuator {
 	 * @return
 	 */
 	public boolean match(String clauseToCheck) {
-		System.out.println("Clause to match: " + clauseToCheck);
 		Boolean matched = false;
 		Pattern checkRegex;
 		Matcher regexMatcher;
