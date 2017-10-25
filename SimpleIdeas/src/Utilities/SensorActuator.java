@@ -79,7 +79,7 @@ public class SensorActuator {
 	}
 	
 	public String toString() {	
-		String representation = "Domain: " + this.domain + "\n" + "Name: " + this.name + "\n" 
+		String representation = "\n---Sensor/Actuator information---" + "\nDomain: " + this.domain + "\n" + "Name: " + this.name + "\n" 
 	+ "Parameter Type: " + this.paramType + "\n" + "Return Values: " + this.returnValueType;
 		return representation;
 	}

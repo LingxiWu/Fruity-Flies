@@ -1,5 +1,6 @@
 package SimpleIdeaPlayground;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Set;
@@ -34,15 +35,23 @@ public class Playground {
 	    // create an empty Annotation just with the given text
 //		String text = "When there are less than 5 vehicles."; // dependent clause
 //	    String text = "When the illumination is set to level 3, the carbon monoxide (CO) emission in a lane should be no more than 50 mg."; // Complex sentence
-//	    String text = "The camera should be turned on, and the illumination of street should be set at least level 3 between 10 PM to 7 AM."; // Compound sentence.
-		String text = "the illumination of street should be set at least level 3 between 5 AM and 12 AM If the number of cars is less than 10."; // Complex sentence.
+	    String text = "The camera should be turned on, and the illumination of street should be set at least level 3 between 10 PM to 7 AM."; // Compound sentence.
+//		String text = "the illumination of street should be set at least level 3 between 5 AM and 12 AM If the number of cars is less than 10."; // Complex sentence.
 //		String text = "after we eat cake, we played football.";
 //		String text = "Any given lane can emit no more than 50 mg of carbon monoxide.";
 //		String text = "The (CO) emission in a lane should always be no more than 50\r\n mg.";
+//	    String text = "I like apple, and I drink water.";
+//		String text = "The camera should be turned on and the noise level should be less than 50 dB when there are less than 50 vehicles.";
+//		String text = "The camera should be turned on, and the noise level should be less than 50 dB when there are more than 50 vehicles or the pedestrian number is over 65.";
+//	    String text = "Lights on.";
+//	    String text = "The camera should be turned on and the illumination of street light should be set at least level 3 within a time interval.";
+//	    String text = "Both the cockroach and the bird would get along very well without us, although the cockroach would miss us most.";
 //	    Annotation document = new Annotation(parserHelper.removeEndPunctuation(text));
 		Annotation document = new Annotation(text);
 	    // run all Annotators on this text
 	    parserHelper.getPipeline().annotate(document);
+	    String parsedTree = document.get(SentencesAnnotation.class).get(0).get(TreeAnnotation.class).toString();
+	    System.out.println(parsedTree);
 
 //	    System.out.println(document.get(SentencesAnnotation.class).get(0).get(BasicDependenciesAnnotation.class).toString());
 	    
@@ -56,16 +65,43 @@ public class Playground {
 	    
 	    KnowledgeBase knowledgeBase = new KnowledgeBase();
 	    knowledgeBase.addSampleSensorActuators();
-	    SensorActuator sensorActuator = knowledgeBase.identifySensorActuator(text);
+	   
+/*	   
+  		SensorActuator sensorActuator = knowledgeBase.identifySensorActuator(text);
 	    if(sensorActuator!=null)
-	    		System.out.println(sensorActuator.toString());
+	    	System.out.println(sensorActuator.toString());
 	    else
-	    		System.out.println("Could not identify either sensor or actuator");
+	    	System.out.println("Could not identify either sensor or actuator");
+*/	    
+	    int sentenceType = ParserUtility.determineSentenceType(text);
+	    if(sentenceType == 0) {
+	    	SensorActuator sensorActuator = knowledgeBase.identifySensorActuator(text);
+    		if(sensorActuator!=null)
+    	    	System.out.println(sensorActuator.toString());
+    	    else
+    	    	System.out.println("Could not identify either sensor or actuator");
+	    }
+	    else if(sentenceType == 1) { // complex
+	    	String dependentClause = ParserUtility.extractDependentClause(text);
+	    	String independentClause = text.replaceAll(dependentClause, "");
+	    	System.out.println("Independent Clause: "+independentClause);
+	    	SensorActuator sensorActuator = knowledgeBase.identifySensorActuator(dependentClause);
+    		if(sensorActuator!=null)
+    	    	System.out.println(sensorActuator.toString());
+    	    else
+    	    	System.out.println("Could not identify either sensor or actuator");
+	    } else if(sentenceType == 2) {
+	    	ArrayList<String> independentClauses = ParserUtility.extractIndependentClauses(text);
+	    	for(String c: independentClauses) {
+	    		SensorActuator sensorActuator = knowledgeBase.identifySensorActuator(c);
+	    		if(sensorActuator!=null)
+	    	    	System.out.println(sensorActuator.toString());
+	    	    else
+	    	    	System.out.println("Could not identify either sensor or actuator");
+	    	}
+	    }
 	    
-//	    System.out.println("");
-//	    parserHelper.determineSentenceType(text);
-	    String parsedTree = document.get(SentencesAnnotation.class).get(0).get(TreeAnnotation.class).toString();
-	    System.out.println(parsedTree);
+	   
 //	    parserHelper.dependentClauseStartWord(parsedTree);
 //	    parserHelper.dependentClauseEndWord(parsedTree);
 //	    parserHelper.extractDependentClause(parsedTree);

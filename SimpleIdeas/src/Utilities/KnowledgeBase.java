@@ -29,7 +29,7 @@ public class KnowledgeBase {
 	 */
 	public SensorActuator identifySensorActuator(String clause) {
 
-		System.out.println("Clause to match: " + clause);
+		System.out.println("\nSearching Knowledgebase to match sensor/actuator ... \nClause to match: " + clause);
 		Iterator<SensorActuator> itr = sensorsActuators.iterator();
 		SensorActuator matched = null;
 		while(itr.hasNext()) {
@@ -37,7 +37,7 @@ public class KnowledgeBase {
 			System.out.println("SensorActuator: " + sa.getName());
 			if(sa.match(clause)) {
 				matched = sa;
-				System.out.println("SensorActuator identified: " + sa.getName());
+				System.out.println("Sensor/Actuator identified: " + sa.getName());
 				break;
 			}
 		}
@@ -62,7 +62,7 @@ public class KnowledgeBase {
 		
 		CarbonMonoxide CarbonMonoxideSensor = new CarbonMonoxide("Environment", "CarbonMonoxide", "mg", "SpaceLocation");
 		CarbonMonoxideSensor.addRegexPattern("(?i)(Carbon monoxide)");
-		CarbonMonoxideSensor.addRegexPattern("(?i)((CO))");
+		CarbonMonoxideSensor.addRegexPattern("(?i)(\\sCO\\s)");
 		
 		
 		
