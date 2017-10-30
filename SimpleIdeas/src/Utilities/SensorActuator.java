@@ -15,17 +15,18 @@ public class SensorActuator {
 
 	String domain; // Environment, Emergency, Traffic, etc...
 	String name; // PedestrianNumber, VehicleWaitTime, CO...
-	String returnValueType; // Seconds, integer, milligram...
+	String unitOfMeasure; // Seconds, integer, milligram...
 	String paramType; // Space, Location, SpaceAndLocation
+	String typeOfMeasurement; // Level(程度), Time(时间), Number(次数), On/Off
 	Set<String> regexPatterns; // Possible regular expressions in a given specification.
 	Set<String> parseTreeRules; // Possible parse tree rules
-	
-	
-	public SensorActuator(String domain, String name, String returnValueType, String paramType) {
+
+	public SensorActuator(String domain, String name, String unitOfMeasure, String paramType, String typeOfMeasurement) {
 		this.domain = domain;
 		this.name = name;
-		this.returnValueType = returnValueType;
+		this.unitOfMeasure = unitOfMeasure;
 		this.paramType = paramType;
+		this.typeOfMeasurement = typeOfMeasurement;
 	}
 	
 	public String getDomain() {
@@ -40,17 +41,23 @@ public class SensorActuator {
 	public void setName(String name) {
 		this.name = name;
 	}
-	public String getReturnValueType() {
-		return returnValueType;
+	public String getUnitOfMeasure() {
+		return unitOfMeasure;
 	}
-	public void setReturnValueType(String returnValueType) {
-		this.returnValueType = returnValueType;
+	public void setUnitOfMeasure(String unitOfMeasure) {
+		this.unitOfMeasure = unitOfMeasure;
 	}
 	public String getParamType() {
 		return paramType;
 	}
 	public void setParamType(String paramType) {
 		this.paramType = paramType;
+	}
+	public String getTypeOfMeasurement() {
+		return typeOfMeasurement;
+	}
+	public void setTypeOfMeasurement(String typeOfMeasurement) {
+		this.typeOfMeasurement = typeOfMeasurement;
 	}
 	public Set<String> getRegexPatterns() {
 		return regexPatterns;
@@ -80,7 +87,7 @@ public class SensorActuator {
 	
 	public String toString() {	
 		String representation = "\n---Sensor/Actuator information---" + "\nDomain: " + this.domain + "\n" + "Name: " + this.name + "\n" 
-	+ "Parameter Type: " + this.paramType + "\n" + "Return Values: " + this.returnValueType;
+	+ "Parameter Type: " + this.paramType + "\n" + "Unit of measure: " + this.unitOfMeasure + "\nType of Measurement: " + typeOfMeasurement;
 		return representation;
 	}
 	

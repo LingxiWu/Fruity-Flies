@@ -10,6 +10,7 @@ import java.util.Stack;
 
 import edu.stanford.nlp.ling.CoreAnnotations.LemmaAnnotation;
 import edu.stanford.nlp.ling.CoreAnnotations.NamedEntityTagAnnotation;
+import edu.stanford.nlp.ling.CoreAnnotations.NormalizedNamedEntityTagAnnotation;
 import edu.stanford.nlp.ling.CoreAnnotations.SentencesAnnotation;
 import edu.stanford.nlp.ling.CoreAnnotations.TokensAnnotation;
 import edu.stanford.nlp.ling.CoreLabel;
@@ -20,6 +21,7 @@ import edu.stanford.nlp.semgraph.SemanticGraphCoreAnnotations.BasicDependenciesA
 import edu.stanford.nlp.trees.Tree;
 import edu.stanford.nlp.trees.TreeCoreAnnotations.TreeAnnotation;
 import edu.stanford.nlp.util.CoreMap;
+import edu.stanford.nlp.util.PropertiesUtils;
 /**
  * Utility class for parsing a single sentence.
  * @author lingxiwu
@@ -56,9 +58,17 @@ public class ParserUtility {
 	 */
 	public ParserUtility() {
 		// Set default props which is almost annotators.
-		props = new Properties();
-		props.put("annotators", "tokenize,ssplit,parse,lemma,ner,dcoref");
-		pipeline = new StanfordCoreNLP(props);
+		pipeline = new StanfordCoreNLP(
+				PropertiesUtils.asProperties(
+			"annotators", "tokenize,ssplit,parse,lemma,ner,dcoref",
+			"ner", "NormalizedNamedEntityTagAnnotation",
+//			"ner.useSUTime", "true",
+//			"sutime.includeRange", "true",
+//			"sutime.markTimeRanges", "true",
+			"tokenize.language", "en"));
+//		props = new Properties();
+//		props.put("annotators", "tokenize,ssplit,parse,lemma,ner,dcoref");
+//		pipeline = new StanfordCoreNLP(props);
 	}
 	
 	/**
@@ -68,10 +78,24 @@ public class ParserUtility {
 	 */
 	public ParserUtility(String propsString) {
 		// Make a pipeline object.
-		props = new Properties();
-		props.put("annotators", propsString);
-		pipeline = new StanfordCoreNLP(props);		
+		pipeline = new StanfordCoreNLP(
+				PropertiesUtils.asProperties(
+			"annotators", "tokenize,ssplit,parse,lemma,ner,dcoref",
+			"ner", "NormalizedNamedEntityTagAnnotation",
+			"ner.useSUTime", "true",
+			"sutime.includeRange", "true",
+			"sutime.markTimeRanges", "true",
+			"tokenize.language", "en"));
+//		props = new Properties();
+//		props.put("annotators", propsString);
+//		pipeline = new StanfordCoreNLP(props);		
 	}	
+	
+	public static String formatTime(String sentence) {
+		
+		
+		return null;
+	}
 
 	/**
 	 * Build a hash map that stores Named Entities: LOCATION -> "Baker Street" 
@@ -80,7 +104,8 @@ public class ParserUtility {
 	 */
 	public static HashMap<String, String> extractNamedEntities(String clause) {
 		
-		System.out.println("Performing Named Entity Extraction Process ... ");
+		System.out.println("\nPerforming Named Entity Extraction Process ... ");
+		System.out.println("Clause to search: " + clause);
 		
 		Annotation doc = new Annotation(clause);
 		pipeline.annotate(doc);
@@ -91,6 +116,7 @@ public class ParserUtility {
 		String recognizedNE = "O", partialNEValue = "";		
 		for(CoreLabel token : doc.get(SentencesAnnotation.class).get(0).get(TokensAnnotation.class)) {
 			String ne = token.get(NamedEntityTagAnnotation.class);
+//			String ne = token.get(NormalizedNamedEntityTagAnnotation.class);
 			if(!ne.equals("O")) {								
 				if(!recognizedNE.equals(ne)) {
 					recognizedNE = ne;		
@@ -110,9 +136,12 @@ public class ParserUtility {
 		for(int i=0;i<tempNEClassHolder.size();i++) {
 			namedEntities.put(tempNEClassHolder.get(i), tempNE.get(i));
 		}
-
-		System.out.println(tempNEClassHolder.toString());
-		System.out.println(tempNE.toString());
+		if(namedEntities.size() == 0) {
+			System.out.println("No Named Entity identified.");
+		} else {
+			System.out.println(tempNEClassHolder.toString());
+			System.out.println(tempNE.toString());
+		}
 		return namedEntities;
 		
 	}
@@ -260,7 +289,7 @@ public class ParserUtility {
 		String parseTree = doc.get(SentencesAnnotation.class).get(0).get(TreeAnnotation.class).toString();
 		String orig_parseTree = parseTree;
 		
-		// Strip away Root node, first S node, and last two prenthases.
+		// Strip away Root node, first S node, and last two parentheses.
 		parseTree = parseTree.toString().replaceAll("\\(ROOT+\\s+\\(S", "");
 		parseTree = parseTree.substring(0, parseTree.length()-2).trim();
 		int i = parseTree.indexOf("(S");
@@ -274,7 +303,7 @@ public class ParserUtility {
 				i++;
 				if(stack.size() == 0) {
 					endIndex = i;
-					tempClause = parseTree.substring(startIndex, i+1);
+					tempClause = parseTree.substring(startIndex, i);
 					indClause = "";
 					String[] parts = tempClause.split(" ");
 					for(int j=0;j<parts.length;j++) {
@@ -299,28 +328,6 @@ public class ParserUtility {
 		return indClauses;
 	}
 	
-	/**
-	 * Takes the sample specification and sentence type as a clue to extract clause(s).
-	 * It seems to be more natural and concise to describe around one sensor/actuator 
-	 * @param specification
-	 * @param sentenceType
-	 * @return
-	 */
-	public static HashMap<String, String> extractClauses(String specification, int sentenceType){
-		
-		System.out.println("Extracting clauses ... ");
-		
-		HashMap<String, String> clauses = new HashMap<String, String>();
-		
-		if(sentenceType == 0) { // Simple
-			clauses.put("independent", specification);
-		} else if(sentenceType == 1) { // Complex
-			// Find the dependent clause first. It's the part followed by SBAR.
-			
-		}
-		
-		return null;
-	}
 	
 	/**
 	 * Take a word and return its lemma. occurs -> occur, occurred -> occur.
